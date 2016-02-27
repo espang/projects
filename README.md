@@ -9,3 +9,7 @@ Python project to learn zeromq. Used to parallelize deterministic optimizations 
 ## tsm
 
 Python project to evaluate redis as a time series database.
+
+## powerplant
+
+Python project to optimize a powerplant with multiple simulations.

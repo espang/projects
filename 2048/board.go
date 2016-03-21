@@ -15,10 +15,32 @@ const (
 	RIGHT
 )
 
+var directions = [...]string{
+	"up",
+	"down",
+	"left",
+	"right",
+}
+
+func (dir Direction) String() string {
+	return directions[dir]
+}
+
 // Board represents the 2048-4x4-board
 // with numbers between 2 and 2**16
 type Board struct {
 	field [4][4]uint16
+}
+
+func (b Board) Equals(cmp Board) bool {
+	for x := 0; x < 4; x++ {
+		for y := 0; y < 4; y++ {
+			if b.field[x][y] != cmp.field[x][y] {
+				return false
+			}
+		}
+	}
+	return true
 }
 
 func StartBoard() *Board {
@@ -43,6 +65,23 @@ func (b Board) Print() {
 
 	}
 
+}
+
+func (b *Board) Max() uint16 {
+	var max uint16 = 0
+
+	for row := 0; row < 4; row++ {
+		for col := 0; col < 4; col++ {
+			if b.field[row][col] > max {
+				max = b.field[row][col]
+			}
+		}
+	}
+	return max
+}
+
+func (b *Board) Won() bool {
+	return b.Max() >= 2048
 }
 
 func (b *Board) Lost() bool {
@@ -120,34 +159,28 @@ func (b *Board) Move(dir Direction) error {
 //
 //
 func (b *Board) moveUp() error {
-	hasMoved := false
+	cpy := *b
 	for col := 0; col < 4; col++ {
-		err := b.handleColumn(col, UP)
-		if err == nil {
-			hasMoved = true
-		}
+		b.handleColumn(col, UP)
 	}
-	if hasMoved {
-		return nil
+	if b.Equals(cpy) {
+		return errors.New("Move up not valid")
 	}
-	return errors.New("Move up not valid")
+	return nil
 }
 
 func (b *Board) moveDown() error {
-	hasMoved := false
+	cpy := *b
 	for col := 0; col < 4; col++ {
-		err := b.handleColumn(col, DOWN)
-		if err == nil {
-			hasMoved = true
-		}
+		b.handleColumn(col, DOWN)
 	}
-	if hasMoved {
-		return nil
+	if b.Equals(cpy) {
+		return errors.New("Move up not valid")
 	}
-	return errors.New("Move down not valid")
+	return nil
 }
 
-func (b *Board) handleColumn(col int, dir Direction) error {
+func (b *Board) handleColumn(col int, dir Direction) {
 	getRowIndex := func(row int) int {
 		return row
 	}
@@ -189,42 +222,31 @@ func (b *Board) handleColumn(col int, dir Direction) error {
 			b.field[row][col] = 0
 		}
 	}
+}
 
-	if len(result) == len(nonZeros) {
-		return errors.New("No change in column")
+func (b *Board) moveLeft() error {
+	cpy := *b
+	for row := 0; row < 4; row++ {
+		b.handleRow(row, LEFT)
+	}
+	if b.Equals(cpy) {
+		return errors.New("Move up not valid")
 	}
 	return nil
 }
 
-func (b *Board) moveLeft() error {
-	hasMoved := false
-	for row := 0; row < 4; row++ {
-		err := b.handleRow(row, LEFT)
-		if err == nil {
-			hasMoved = true
-		}
-	}
-	if hasMoved {
-		return nil
-	}
-	return errors.New("Move left not valid")
-}
-
 func (b *Board) moveRight() error {
-	hasMoved := false
+	cpy := *b
 	for row := 0; row < 4; row++ {
-		err := b.handleRow(row, RIGHT)
-		if err == nil {
-			hasMoved = true
-		}
+		b.handleRow(row, RIGHT)
 	}
-	if hasMoved {
-		return nil
+	if b.Equals(cpy) {
+		return errors.New("Move up not valid")
 	}
-	return errors.New("Move right not valid")
+	return nil
 }
 
-func (b *Board) handleRow(row int, dir Direction) error {
+func (b *Board) handleRow(row int, dir Direction) {
 	getColIndex := func(col int) int {
 		return col
 	}
@@ -266,9 +288,4 @@ func (b *Board) handleRow(row int, dir Direction) error {
 			b.field[row][col] = 0
 		}
 	}
-
-	if len(result) == len(nonZeros) {
-		return errors.New("No change in column")
-	}
-	return nil
 }

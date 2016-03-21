@@ -2,17 +2,6 @@ package main
 
 import "testing"
 
-func compare(b1, b2 *Board) bool {
-	for x := 0; x < 4; x++ {
-		for y := 0; y < 4; y++ {
-			if b1.field[x][y] != b2.field[x][y] {
-				return false
-			}
-		}
-	}
-	return true
-}
-
 func TestMoveUp(t *testing.T) {
 	before := Board{[4][4]uint16{
 		[4]uint16{2, 4, 4, 0},
@@ -31,7 +20,7 @@ func TestMoveUp(t *testing.T) {
 	if err != nil {
 		t.Errorf("could not move up: %v", err)
 	}
-	if !compare(&before, &after) {
+	if !before.Equals(after) {
 		t.Errorf("move not ok except %s, got %s", after, before)
 	}
 }
@@ -68,22 +57,31 @@ func TestMoveDown(t *testing.T) {
 	if err != nil {
 		t.Errorf("could not move down: %v", err)
 	}
-	if !compare(&before, &after) {
+	if !before.Equals(after) {
 		t.Errorf("move not ok except %s, got %s", after, before)
 	}
 }
 
-func TestColumnDownNotValid(t *testing.T) {
-	b := Board{[4][4]uint16{
+func TestColumnDown2(t *testing.T) {
+	before := Board{[4][4]uint16{
 		[4]uint16{2, 4, 4, 0},
 		[4]uint16{0, 0, 0, 0},
 		[4]uint16{0, 0, 0, 0},
 		[4]uint16{0, 0, 0, 0},
 	}}
-	org := b
-	err := b.Move(DOWN)
-	if err == nil {
-		t.Errorf("expect error moving down board %s, got no error, got %s", org, b)
+	after := Board{[4][4]uint16{
+		[4]uint16{0, 0, 0, 0},
+		[4]uint16{0, 0, 0, 0},
+		[4]uint16{0, 0, 0, 0},
+		[4]uint16{2, 4, 4, 0},
+	}}
+
+	err := before.moveDown()
+	if err != nil {
+		t.Errorf("could not move down: %v", err)
+	}
+	if !before.Equals(after) {
+		t.Errorf("move not ok except %s, got %s", after, before)
 	}
 }
 
@@ -105,7 +103,7 @@ func TestMoveRight(t *testing.T) {
 	if err != nil {
 		t.Errorf("could not move right: %v", err)
 	}
-	if !compare(&before, &after) {
+	if !before.Equals(after) {
 		t.Errorf("move not ok except %s, got %s", after, before)
 	}
 }
@@ -128,7 +126,7 @@ func TestMoveLeft(t *testing.T) {
 	if err != nil {
 		t.Errorf("could not move left: %v", err)
 	}
-	if !compare(&before, &after) {
+	if !before.Equals(after) {
 		t.Errorf("move not ok except %s, got %s", after, before)
 	}
 }

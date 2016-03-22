@@ -130,3 +130,28 @@ func TestMoveLeft(t *testing.T) {
 		t.Errorf("move not ok except %s, got %s", after, before)
 	}
 }
+
+var lostTests = map[Board]bool{
+	Board{[4][4]uint16{
+		[4]uint16{2, 4, 4, 0},
+		[4]uint16{2, 4, 4, 2},
+		[4]uint16{2, 4, 8, 0},
+		[4]uint16{2, 8, 0, 2},
+	}}: false,
+	Board{[4][4]uint16{
+		[4]uint16{2, 4, 2, 4},
+		[4]uint16{4, 2, 4, 2},
+		[4]uint16{2, 4, 2, 4},
+		[4]uint16{4, 2, 4, 2},
+	}}: true,
+}
+
+func TestLost(t *testing.T) {
+	for board, lost := range lostTests {
+		result := board.Lost()
+
+		if lost != result {
+			t.Errorf("Lost function wrong: expect %v got %v with board %s", lost, result, board)
+		}
+	}
+}

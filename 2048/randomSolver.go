@@ -2,6 +2,7 @@ package main
 
 import "math/rand"
 
+//Stupid as hell, choose random direction
 type randomSolver struct {
 	steps [4]Direction
 }

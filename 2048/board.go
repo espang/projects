@@ -85,29 +85,30 @@ func (b *Board) Won() bool {
 }
 
 func (b *Board) Lost() bool {
-	cpy := *b
-
-	err := cpy.moveUp()
-	if err == nil {
-		return false
+	//not lost when board has at least one zero
+	for r := 0; r < 4; r++ {
+		for c := 0; c < 4; c++ {
+			if b.field[r][c] == 0 {
+				return false
+			}
+		}
 	}
 
-	cpy = *b
-	err = cpy.moveDown()
-	if err == nil {
-		return false
-	}
-
-	cpy = *b
-	err = cpy.moveRight()
-	if err == nil {
-		return false
-	}
-
-	cpy = *b
-	err = cpy.moveLeft()
-	if err == nil {
-		return false
+	// need two same numbers in
+	for i := 0; i < 4; i++ {
+		// 4 2 2 4
+		//column i:
+		if b.field[0][i] == b.field[1][i] ||
+			b.field[1][i] == b.field[2][i] ||
+			b.field[2][i] == b.field[3][i] {
+			return false
+		}
+		//row i:
+		if b.field[i][0] == b.field[i][1] ||
+			b.field[i][1] == b.field[i][2] ||
+			b.field[i][2] == b.field[i][3] {
+			return false
+		}
 	}
 
 	return true

@@ -19,8 +19,8 @@ func ParseKeyValuePair(nbr int, line []byte) (string, string, error) {
 		)
 	}
 
-	key := string(bytes.TrimSpace(bytesSlices[0]))
-	value := string(bytes.TrimSpace(bytesSlices[1]))
+	key := string(bytes.TrimSpace(bytes.ToLower(bytesSlices[0])))
+	value := string(bytes.TrimSpace(bytes.ToLower(bytesSlices[1])))
 
 	return key, value, nil
 }
@@ -33,7 +33,7 @@ func GetSectionFromLine(line []byte) (string, bool) {
 		return "", false
 	}
 	if trimmedLine[0] == '[' && trimmedLine[len(trimmedLine)-1] == ']' {
-		name := string(trimmedLine[1 : len(trimmedLine)-1])
+		name := string(bytes.ToLower(trimmedLine[1 : len(trimmedLine)-1]))
 		return name, name != ""
 	}
 	return "", false

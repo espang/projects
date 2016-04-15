@@ -72,6 +72,20 @@ var tests = []test{
 		},
 	},
 	{
+		eval:     "( A or B ) and ( C )",
+		literals: map[string]int{"A": 1, "B": 2, "C": 4},
+		testmap: map[int]bool{
+			0: false,
+			1: false,
+			2: false,
+			3: false,
+			4: false,
+			5: true,
+			6: true,
+			7: true,
+		},
+	},
+	{
 		eval:     "not A",
 		literals: map[string]int{"A": 1},
 		testmap: map[int]bool{

@@ -82,11 +82,6 @@ func createSubTree(tokens []string) (Node, error) {
 			return &Value{label: token}, nil
 		}
 	}
-	start, end := tokens[0], tokens[numberOfTokens-1]
-
-	if start == OPEN && end == CLOSE {
-		return createSubTree(tokens[1 : numberOfTokens-1])
-	}
 
 	var n Node
 	var lvl int
@@ -154,6 +149,11 @@ func createSubTree(tokens []string) (Node, error) {
 		}
 		n = &Not{child: child}
 		return n, nil
+	}
+	start, end := tokens[0], tokens[numberOfTokens-1]
+
+	if start == OPEN && end == CLOSE {
+		return createSubTree(tokens[1 : numberOfTokens-1])
 	}
 
 	return nil, errors.New("could not handle expression!")
